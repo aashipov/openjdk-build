@@ -1,0 +1,8 @@
+FROM alpine:3.12
+ARG DUMMY_USER=dummy
+ARG UID_GID=10001
+ENV JAVA_HOME=/opt/jdk
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+RUN apk update && apk --no-cache add git which bash grep zip curl wget build-base clang freetype-dev cups-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev alsa-lib-dev libffi-dev autoconf fontconfig-dev && \
+addgroup -g ${UID_GID} ${DUMMY_USER} && adduser -u ${UID_GID} -h /${DUMMY_USER}/ -G ${DUMMY_USER} -D ${DUMMY_USER} && \
+mkdir -p ${JAVA_HOME}/
