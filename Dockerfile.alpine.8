@@ -1,8 +1,0 @@
-FROM aashipov/openjdk-build:alpinejdkbuilder AS downloader
-ARG OPENJDK_ARCHIVE_NAME=OpenJDK8U-jdk_x64_alpine-linux_hotspot_8u345b01.tar.gz
-ARG OPENJDK_ARCHIVE_IN_TMP=/tmp/${OPENJDK_ARCHIVE_NAME}
-ADD https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u345-b01/${OPENJDK_ARCHIVE_NAME} /tmp/
-RUN tar -xzf ${OPENJDK_ARCHIVE_IN_TMP} -C ${JAVA_HOME}/ --strip-components=1 && rm -rf ${OPENJDK_ARCHIVE_IN_TMP}
-
-FROM aashipov/openjdk-build:alpinejdkbuilder
-COPY --from=downloader ${JAVA_HOME}/ ${JAVA_HOME}/

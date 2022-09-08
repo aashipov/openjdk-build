@@ -1,0 +1,39 @@
+FROM alpine:3.12 AS jdkbuilder
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdkbuilder --tag=aashipov/openjdk-build:alpinejdkbuilder && docker push aashipov/openjdk-build:alpinejdkbuilder
+ARG DUMMY_USER=dummy
+ARG UID_GID=10001
+ENV JAVA_HOME=/opt/jdk
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+RUN apk update && apk --no-cache add git which bash grep zip curl wget build-base clang freetype-dev cups-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev alsa-lib-dev libffi-dev autoconf fontconfig-dev && \
+addgroup -g ${UID_GID} ${DUMMY_USER} && adduser -u ${UID_GID} -h /${DUMMY_USER}/ -G ${DUMMY_USER} -D ${DUMMY_USER} && \
+mkdir -p ${JAVA_HOME}/
+
+FROM aashipov/openjdk-build:alpinejdkbuilder AS jdk8u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdk8u --tag=aashipov/openjdk-build:alpinejdk8u && docker push aashipov/openjdk-build:alpinejdk8u
+RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u345-b01/OpenJDK8U-jdk_x64_alpine-linux_hotspot_8u345b01.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:alpinejdkbuilder AS jdk11u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdk11u --tag=aashipov/openjdk-build:alpinejdk11u && docker push aashipov/openjdk-build:alpinejdk11u
+RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16.1_1.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:alpinejdkbuilder AS jdk17u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdk17u --tag=aashipov/openjdk-build:alpinejdk17u && docker push aashipov/openjdk-build:alpinejdk17u
+RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.4.1%2B1/OpenJDK17U-jdk_x64_alpine-linux_hotspot_17.0.4.1_1.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz

@@ -1,12 +1,8 @@
 openJDK from source on Windows
 
 Windows Server 2012 180 days trial
-cygwin with bash git autoconf make cmake zip unzip cpio mc
+cygwin with bash git autoconf make cmake zip unzip cpio mc curl
 Visual Studio 2017
 bootstrap jdk 8, 11 and 17 as ```${HOME}/dev/tools/openjdk8```, ```{$HOME}/dev/tools/openjdk11``` and ```${HOME}/dev/tools/openjdk17```
 
 https://github.com/eclipse-openj9/openj9/blob/master/doc/build-instructions/Build_Instructions_V17.md#windows
-
-For JDK 8 only: https://download.savannah.gnu.org/releases/freetype/freetype-old/freetype-2.5.3.tar.gz in ```${HOME}/dev/VCS/freetype-2.5.3```
-
-Clone repo to ```${HOME}/dev/VSC```, cd, ```bash entrypoint8.bash```, ```bash entrypoint9plus.bash 11``` or ```bash entrypoint9plus.bash 17```

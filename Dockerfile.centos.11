@@ -1,8 +1,0 @@
-FROM aashipov/openjdk-build:centosjdkbuilder AS downloader
-ARG OPENJDK_ARCHIVE_NAME=openjdk-11.0.2_linux-x64_bin.tar.gz
-ARG OPENJDK_ARCHIVE_IN_TMP=/tmp/${OPENJDK_ARCHIVE_NAME}
-ADD https://download.java.net/java/GA/jdk11/9/GPL/${OPENJDK_ARCHIVE_NAME} /tmp/
-RUN tar -xzf ${OPENJDK_ARCHIVE_IN_TMP} -C ${JAVA_HOME}/ --strip-components=1 && rm -rf ${OPENJDK_ARCHIVE_IN_TMP}
-
-FROM aashipov/openjdk-build:centosjdkbuilder  
-COPY --from=downloader ${JAVA_HOME}/ ${JAVA_HOME}/

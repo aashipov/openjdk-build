@@ -1,0 +1,42 @@
+FROM debian:9 AS jdkbuilder
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.debian --target=jdkbuilder --tag=aashipov/openjdk-build:debianjdkbuilder && docker push aashipov/openjdk-build:debianjdkbuilder
+ARG DUMMY_USER=dummy
+ARG UID_GID=10001
+ENV JAVA_HOME=/opt/jdk
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+RUN apt-get update && apt-get upgrade -y && apt-get install -y curl wget file build-essential git autoconf make zip unzip clang \
+libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libasound2-dev libffi-dev libfontconfig1-dev \
+libgif-dev && \
+apt-get clean && \
+groupadd -g ${UID_GID} ${DUMMY_USER} && useradd -m -u ${UID_GID} -d /${DUMMY_USER}/ -g ${DUMMY_USER} ${DUMMY_USER} && \
+mkdir -p ${JAVA_HOME}/
+
+FROM aashipov/openjdk-build:debianjdkbuilder AS jdk8u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.debian --target=jdk8u --tag=aashipov/openjdk-build:debianjdk8u && docker push aashipov/openjdk-build:debianjdk8u
+RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u302-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u302b08.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:debianjdkbuilder AS jdk11u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.debian --target=jdk11u --tag=aashipov/openjdk-build:debianjdk11u && docker push aashipov/openjdk-build:debianjdk11u
+RUN curl -L -o /tmp/openjdk.tar.gz https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:debianjdkbuilder AS jdk17u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.debian --target=jdk17u --tag=aashipov/openjdk-build:debianjdk17u && docker push aashipov/openjdk-build:debianjdk17u
+RUN curl -L -o /tmp/openjdk.tar.gz https://download.java.net/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
