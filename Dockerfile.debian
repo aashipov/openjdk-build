@@ -1,10 +1,19 @@
-FROM debian:9 AS jdkbuilder
+FROM debian:9 AS base
+COPY <<EOF /etc/apt/sources.list
+deb http://archive.debian.org/debian/ stretch main contrib non-free
+deb-src http://archive.debian.org/debian/ stretch main contrib non-free
+
+deb http://archive.debian.org/debian-security/ stretch/updates main contrib non-free
+deb-src http://archive.debian.org/debian-security/ stretch/updates main contrib non-free
+EOF
+
+FROM base AS jdkbuilder
 # DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.debian --target=jdkbuilder --tag=aashipov/openjdk-build:debianjdkbuilder && docker push aashipov/openjdk-build:debianjdkbuilder
 ARG DUMMY_USER=dummy
 ARG UID_GID=10001
 ENV JAVA_HOME=/opt/jdk
 ENV PATH=${JAVA_HOME}/bin:${PATH}
-RUN apt-get update && apt-get upgrade -y && apt-get install -y curl wget file build-essential git autoconf make zip unzip clang \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y curl wget file build-essential git autoconf make zip unzip clang bsdmainutils \
 libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libasound2-dev libffi-dev libfontconfig1-dev \
 libgif-dev && \
 apt-get clean && \
