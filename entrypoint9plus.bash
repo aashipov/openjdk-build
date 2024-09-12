@@ -33,8 +33,10 @@ environment() {
             TOP_DIR="/c"
         fi
         OS_TYPE="windows"
-        export JAVA_HOME=${TOP_DIR}/dev/tools/openjdk${JAVA_VERSION}
         _CFLAGS="/O2"
+    fi
+    if [[ -z ${JAVA_HOME+x} ]] || [[ "" == "${JAVA_HOME}" ]]; then
+        export JAVA_HOME=${TOP_DIR}/dev/tools/openjdk${JAVA_VERSION}
     fi
     JDK_DIR="${TOP_DIR}/${JDK_FLAVOR}"
     JTREG_DIR="${TOP_DIR}/${JTREG}"
@@ -45,8 +47,10 @@ environment() {
     if [ -f /etc/alpine-release ]; then
         ALPINE="-alpine"
     elif [ -f /etc/centos-release ] || [ -f /etc/redhat-release ]; then
-        source /opt/rh/devtoolset-10/enable
-    #    source /opt/rh/llvm-toolset-7/enable
+        if [ ! -f /etc/fedora-release ]; then
+            source /opt/rh/devtoolset-10/enable
+        #    source /opt/rh/llvm-toolset-7/enable
+        fi
     fi
 
     if [[ "${JAVA_VERSION}" = "11" ]]; then

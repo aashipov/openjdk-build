@@ -25,7 +25,7 @@ environment() {
   TOP_DIR=${HOME}
   # https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/java8-openjdk/trunk/PKGBUILD
   # Avoid optimization of HotSpot being lowered from O3 to O2
-  _CFLAGS="-O3 -pipe"
+  _CFLAGS="-O3 -pipe -Wno-error"
   if [[ "${OSTYPE}" == "cygwin" || "${OSTYPE}" == "msys" ]]; then
     if [[ "${OSTYPE}" == "cygwin" ]]; then
       TOP_DIR="/cygdrive/c"
@@ -33,7 +33,6 @@ environment() {
       TOP_DIR="/c"
     fi
     OS_TYPE="windows"
-    export JAVA_HOME=${TOP_DIR}/dev/tools/openjdk1.${JAVA_VERSION}
     _CFLAGS="/O2"
     local FREETYPE=freetype
     local FREETYPE_AND_VERSION=${FREETYPE}-2.5.3
@@ -49,6 +48,9 @@ environment() {
       rm -rf ${FREETYPE_TAR_GZ_IN_TEMP}
     fi
   fi
+  if [[ -z ${JAVA_HOME+x} ]] || [[ "" == "${JAVA_HOME}" ]]; then
+    export JAVA_HOME=${TOP_DIR}/dev/tools/openjdk${JAVA_VERSION}
+  fi
   JDK_DIR="${TOP_DIR}/${JDK_FLAVOR}"
   JTREG_DIR="${TOP_DIR}/${JTREG}"
   OS_TYPE_AND_INSTRUCTION_SET="${OS_TYPE}-${INSTRUCTION_SET}"
@@ -57,8 +59,10 @@ environment() {
   if [ -f /etc/alpine-release ]; then
     ALPINE="-alpine"
   elif [ -f /etc/centos-release ] || [ -f /etc/redhat-release ]; then
-    source /opt/rh/devtoolset-10/enable
-  #  source /opt/rh/llvm-toolset-7/enable
+    if [ ! -f /etc/fedora-release ]; then
+      source /opt/rh/devtoolset-10/enable
+    #    source /opt/rh/llvm-toolset-7/enable
+    fi
   fi
 }
 
