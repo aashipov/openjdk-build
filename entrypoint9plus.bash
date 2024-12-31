@@ -26,12 +26,8 @@ environment() {
     # https://github.com/archlinux/svntogit-packages/blob/packages/java11-openjdk/trunk/PKGBUILD
     # Avoid optimization of HotSpot being lowered from O3 to O2
     _CFLAGS="-O3 -pipe"
-    if [[ "${OSTYPE}" == "cygwin" || "${OSTYPE}" == "msys" ]]; then
-        if [[ "${OSTYPE}" == "cygwin" ]]; then
-            TOP_DIR="/cygdrive/c"
-        elif [[ "${OSTYPE}" == "msys" ]]; then
-            TOP_DIR="/c"
-        fi
+    if [[ "${OSTYPE}" == "cygwin" ]]; then
+        TOP_DIR="/cygdrive/c"
         OS_TYPE="windows"
         _CFLAGS="/O2"
     fi

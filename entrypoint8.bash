@@ -26,12 +26,8 @@ environment() {
   # https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/java8-openjdk/trunk/PKGBUILD
   # Avoid optimization of HotSpot being lowered from O3 to O2
   _CFLAGS="-O3 -pipe -Wno-error"
-  if [[ "${OSTYPE}" == "cygwin" || "${OSTYPE}" == "msys" ]]; then
-    if [[ "${OSTYPE}" == "cygwin" ]]; then
-      TOP_DIR="/cygdrive/c"
-    elif [[ "${OSTYPE}" == "msys" ]]; then
-      TOP_DIR="/c"
-    fi
+  if [[ "${OSTYPE}" == "cygwin" ]]; then
+    TOP_DIR="/cygdrive/c"
     OS_TYPE="windows"
     _CFLAGS="/O2"
     local FREETYPE=freetype
@@ -94,11 +90,14 @@ build() {
   local UPDATE_VER=${UPDATE_VER#"b"}
 
   local CONFIGURE_DETAILS="--verbose --with-debug-level=release --with-native-debug-symbols=none --with-jvm-variants=server --with-milestone=\"fcs\" --enable-unlimited-crypto --with-extra-cflags=\"${_CFLAGS}\" --with-extra-cxxflags=\"${_CFLAGS}\" --with-extra-ldflags=\"${_CFLAGS}\" --enable-jfr=yes --with-update-version=\"${MINOR_VER}\" --with-build-number=\"${UPDATE_VER}\""
-  if [[ "${OSTYPE}" == "cygwin" || "${OSTYPE}" == "msys" ]]; then
+  if [[ "${OSTYPE}" == "cygwin" ]]; then
     CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-freetype-src=${FREETYPE_SRC_DIR}"
   else
     CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --disable-freetype-bundling"
     #CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-toolchain-type=clang"
+    if [ -f /etc/alpine-release ]; then
+      CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-extra-ldflags=-Wl,--no-keep-memory --disable-ccache"
+    fi
   fi
   bash -c "bash configure ${CONFIGURE_DETAILS}"
 
