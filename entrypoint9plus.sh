@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 environment() {
     _SCRIPT_DIR=$(dirname -- "$(readlink -f -- "$0")")
     cd ${_SCRIPT_DIR}
-
+    
     JAVA_VERSION=${1}
     JDK="jdk"
     JRE="jre"
@@ -14,44 +14,52 @@ environment() {
     JDK_FLAVOR="${JDK}${JAVA_VERSION}u"
     JRE_FLAVOR="${JRE}${JAVA_VERSION}u"
     INSTRUCTION_SET="x86_64"
-
+    
     TAG_TO_BUILD=$(cat ${_SCRIPT_DIR}/.tag_to_build_${JAVA_VERSION})
-    if [[ "${TAG_TO_BUILD}" == "" ]]; then
+    if [ "${TAG_TO_BUILD}" = "" ]
+    then
         printf "Can not find ${_SCRIPT_DIR}/.tag_to_build_${JAVA_VERSION} file or it is empty\n"
         exit 1
     fi
-
+    
     local OS_TYPE="linux"
     TOP_DIR=${HOME}
     # https://github.com/archlinux/svntogit-packages/blob/packages/java11-openjdk/trunk/PKGBUILD
     # Avoid optimization of HotSpot being lowered from O3 to O2
     _CFLAGS="-O3 -pipe"
-    if [[ "${OSTYPE}" == "cygwin" ]]; then
+    if [ "${OSTYPE}" = "cygwin" ]
+    then
         TOP_DIR="/cygdrive/c"
         OS_TYPE="windows"
         _CFLAGS="/O2"
     fi
-    if [[ -z ${JAVA_HOME+x} ]] || [[ "" == "${JAVA_HOME}" ]]; then
+    if [ -z ${JAVA_HOME+x} ] || [ "" = "${JAVA_HOME}" ]
+    then
         export JAVA_HOME=${TOP_DIR}/dev/tools/openjdk${JAVA_VERSION}
     fi
     JDK_DIR="${TOP_DIR}/${JDK_FLAVOR}"
     JTREG_DIR="${TOP_DIR}/${JTREG}"
     GTEST_DIR="${TOP_DIR}/${GTEST}"
     OS_TYPE_AND_INSTRUCTION_SET="${OS_TYPE}-${INSTRUCTION_SET}"
-
+    
     ALPINE=""
-    if [ -f /etc/alpine-release ]; then
+    if [ -f /etc/alpine-release ]
+    then
         ALPINE="-alpine"
-    elif [ -f /etc/centos-release ] || [ -f /etc/redhat-release ]; then
-        if [ ! -f /etc/fedora-release ]; then
-            source /opt/rh/devtoolset-10/enable
-        #    source /opt/rh/llvm-toolset-7/enable
+    elif [ -f /etc/centos-release ] || [ -f /etc/redhat-release ]
+    then
+        if [ ! -f /etc/fedora-release ]
+        then
+            . /opt/rh/devtoolset-10/enable
+            #    . /opt/rh/llvm-toolset-7/enable
         fi
     fi
-
-    if [[ "${JAVA_VERSION}" = "11" ]]; then
+    
+    if [ "${JAVA_VERSION}" = "11" ]
+    then
         RELEASE_IMAGE_DIR=${JDK_DIR}/build/${OS_TYPE_AND_INSTRUCTION_SET}-normal-server-release/images/
-        # if [ ! -d "${JTREG_DIR}/.git" ]; then
+        # if [ ! -d "${JTREG_DIR}/.git" ]
+        # then
         #     cd ${TOP_DIR}
         #     git clone https://github.com/openjdk/${JTREG}.git
         #     cd ${JTREG_DIR}
@@ -60,9 +68,11 @@ environment() {
         #     git pull -r
         # fi
         # bash make/build.sh --jdk ${JAVA_HOME}
-    elif [[ "${JAVA_VERSION}" = "17" ]] || [[ "${JAVA_VERSION}" = "21" ]]; then
+    elif [ "${JAVA_VERSION}" = "17" ] || [ "${JAVA_VERSION}" = "21" ]
+    then
         RELEASE_IMAGE_DIR=${JDK_DIR}/build/${OS_TYPE_AND_INSTRUCTION_SET}-server-release/images/
-        # if [ ! -d "${GTEST_DIR}/.git" ]; then
+        # if [ ! -d "${GTEST_DIR}/.git" ]
+        # then
         #     cd ${TOP_DIR}
         #     git clone https://github.com/google/googletest
         #     cd ${GTEST_DIR}
@@ -80,7 +90,8 @@ environment() {
 
 checkout() {
     local DEFAULT_BRANCH=master
-    if [ ! -d "${JDK_DIR}/.git" ]; then
+    if [ ! -d "${JDK_DIR}/.git" ]
+    then
         cd ${TOP_DIR}
         git clone https://github.com/openjdk/${JDK_FLAVOR}.git
         cd ${JDK_DIR}
@@ -89,8 +100,9 @@ checkout() {
         git checkout ${DEFAULT_BRANCH}
         git pull
     fi
-
-    if [ $(git tag -l "${TAG_TO_BUILD}") ]; then
+    
+    if [ $(git tag -l "${TAG_TO_BUILD}") ]
+    then
         git checkout tags/${TAG_TO_BUILD}
     else
         printf "Can not find tag ${TAG_TO_BUILD}\n"
@@ -104,7 +116,7 @@ build() {
     #CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-jtreg=${JTREG_DIR}/build/images/jtreg"
     #CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-gtest=${GTEST_DIR}"
     bash -c "bash configure ${CONFIGURE_DETAILS}"
-
+    
     make clean
     local STARTTIME=$(date +%s)
     make images legacy-jre-image docs
@@ -113,7 +125,8 @@ build() {
 }
 
 publish() {
-    if [[ $? -eq 0 ]]; then
+    if [ ${?} -eq 0 ]
+    then
         cd ${RELEASE_IMAGE_DIR}
         local DOT_TAR_DOT_GZ=".tar.gz"
         local JDK_FILE_NAME=${JDK_FLAVOR}-${OS_TYPE_AND_INSTRUCTION_SET}-${TAG_TO_BUILD}${ALPINE}${DOT_TAR_DOT_GZ}
@@ -122,29 +135,32 @@ publish() {
         find "${PWD}" -type f -name '*.diz' -exec rm {} \;
         GZIP=-9 tar -czhf ${JDK_FILE_NAME} jdk/
         GZIP=-9 tar -czhf ${JRE_FILE_NAME} jre/
-
+        
         local GITHUB_TOKEN=$(cat ${HOME}/.github_token)
-        if [[ "${GITHUB_TOKEN}" != "" ]]; then
+        if [ "${GITHUB_TOKEN}" != "" ]
+        then
             local GITHUB_OWNER=aashipov
             local GITHUB_REPO=openjdk-build
             local GITHUB_RELEASE_ID=90555385
-
-            local FILES_TO_UPLOAD=(${JDK_FILE_NAME} ${JRE_FILE_NAME})
-            for file_to_upload in "${FILES_TO_UPLOAD[@]}"; do
+            
+            local FILES_TO_UPLOAD="${JDK_FILE_NAME} ${JRE_FILE_NAME}"
+            for file_to_upload in ${FILES_TO_UPLOAD}
+            do
                 #https://stackoverflow.com/a/7506695
                 FILE_NAME_URL_ENCODED=$(printf "${file_to_upload}" | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
                 curl \
-                    https://uploads.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/${GITHUB_RELEASE_ID}/assets?name=${FILE_NAME_URL_ENCODED} \
-                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-                    -H "Content-type: application/gzip" \
-                    --data-binary @${RELEASE_IMAGE_DIR}/${file_to_upload}
+                https://uploads.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/${GITHUB_RELEASE_ID}/assets?name=${FILE_NAME_URL_ENCODED} \
+                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                -H "Content-type: application/gzip" \
+                --data-binary @${RELEASE_IMAGE_DIR}/${file_to_upload}
             done
         fi
     fi
 }
 
 do_test() {
-    if [[ $? -eq 0 ]]; then
+    if [ ${?} -eq 0 ]
+    then
         cd ${JDK_DIR}
         make run-test-tier1
     fi

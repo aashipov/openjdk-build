@@ -1,7 +1,8 @@
 FROM centos:7 AS jdkbuilder
 # DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.centos --target=jdkbuilder --tag=aashipov/openjdk-build:centosjdkbuilder && docker push aashipov/openjdk-build:centosjdkbuilder
 ARG DUMMY_USER=dummy
-ARG UID_GID=10001
+ARG DUMMY_UID=10001
+ARG DUMMY_GID=10001
 ENV JAVA_HOME=/opt/jdk
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 RUN yum upgrade -y && \
@@ -11,7 +12,7 @@ yum install -y zip bzip2 unzip tar wget make autoconf automake libtool file whic
 libstdc++-static \
 freetype-devel cups-devel libXtst-devel libXt-devel libXrender-devel libXrandr-devel libXi-devel alsa-lib-devel fontconfig-devel && \
 yum clean all && \
-groupadd -g ${UID_GID} ${DUMMY_USER} && useradd -m -u ${UID_GID} -d /${DUMMY_USER}/ -g ${DUMMY_USER} ${DUMMY_USER}&& \
+groupadd -g ${DUMMY_GID} ${DUMMY_USER} && useradd -m -u ${DUMMY_UID} -d /${DUMMY_USER}/ -g ${DUMMY_USER} ${DUMMY_USER}&& \
 mkdir -p ${JAVA_HOME}/
 
 FROM aashipov/openjdk-build:centosjdkbuilder AS jdk7u
