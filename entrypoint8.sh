@@ -63,8 +63,8 @@ environment() {
     then
         if [ ! -f /etc/fedora-release ]
         then
-            .source /opt/rh/devtoolset-10/enable
-            #    . /opt/rh/llvm-toolset-7/enable
+            . /opt/rh/devtoolset-10/enable
+            #. /opt/rh/llvm-toolset-7/enable
         fi
     fi
 }

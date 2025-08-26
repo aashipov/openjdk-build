@@ -51,7 +51,7 @@ environment() {
         if [ ! -f /etc/fedora-release ]
         then
             . /opt/rh/devtoolset-10/enable
-            #    . /opt/rh/llvm-toolset-7/enable
+            #. /opt/rh/llvm-toolset-7/enable
         fi
     fi
     
@@ -68,7 +68,7 @@ environment() {
         #     git pull -r
         # fi
         # bash make/build.sh --jdk ${JAVA_HOME}
-    elif [ "${JAVA_VERSION}" = "17" ] || [ "${JAVA_VERSION}" = "21" ]
+    elif [ "${JAVA_VERSION}" = "17" ] || [ "${JAVA_VERSION}" = "21" ] || [ "${JAVA_VERSION}" = "25" ]
     then
         RELEASE_IMAGE_DIR=${JDK_DIR}/build/${OS_TYPE_AND_INSTRUCTION_SET}-server-release/images/
         # if [ ! -d "${GTEST_DIR}/.git" ]
@@ -83,7 +83,7 @@ environment() {
         # fi
         # git checkout tags/release-1.8.1
     else
-        printf "Version 11, 17 or 21 only\n"
+        printf "Version 11, 17, 21, 25 only\n"
         exit 1
     fi
 }

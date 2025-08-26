@@ -61,3 +61,13 @@ find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
 rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
 java -version && \
 rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:centosjdkbuilder AS jdk25u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.centos --target=jdk25u --tag=aashipov/openjdk-build:centosjdk25u && docker push aashipov/openjdk-build:centosjdk25u
+RUN curl -L -o /tmp/openjdk.tar.gz https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_linux-x64_bin.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz

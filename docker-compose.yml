@@ -1,14 +1,16 @@
-version: '3.8'
+version: '3.9'
 
-# mkdir -p ${HOME}/jdk7u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=7 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk8u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=8 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk11u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=11 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk17u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=17 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk21u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=21 docker-compose -f docker-compose.yml run --rm --build jdk
+# mkdir -p ${HOME}/jdk7u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=7 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk8u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=8 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk11u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=11 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk17u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=17 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk21u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=21 docker-compose -f docker-compose.yml run --rm jdk
+# # mkdir -p ${HOME}/jdk25u && DISTRO=centos DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=25 docker-compose -f docker-compose.yml run --rm jdk
 
-# mkdir -p ${HOME}/jdk11u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=11 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk17u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=17 docker-compose -f docker-compose.yml run --rm --build jdk
-# mkdir -p ${HOME}/jdk21u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=21 docker-compose -f docker-compose.yml run --rm --build jdk
+# mkdir -p ${HOME}/jdk11u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=11 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk17u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=17 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk21u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=21 docker-compose -f docker-compose.yml run --rm jdk
+# mkdir -p ${HOME}/jdk25u && DISTRO=alpine DUMMY_UID=`id -u` DUMMY_GID=`id -g` JAVA_VERSION=25 docker-compose -f docker-compose.yml run --rm jdk
 
 services:
   jdk:
