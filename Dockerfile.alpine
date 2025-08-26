@@ -1,4 +1,4 @@
-FROM alpine:3.12 AS jdkbuilder
+FROM alpine:3.14 AS jdkbuilder
 # DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdkbuilder --tag=aashipov/openjdk-build:alpinejdkbuilder && docker push aashipov/openjdk-build:alpinejdkbuilder
 ARG DUMMY_USER=dummy
 ARG UID_GID=10001
@@ -41,6 +41,16 @@ rm -rf /tmp/openjdk.tar.gz
 FROM aashipov/openjdk-build:alpinejdkbuilder AS jdk21u
 # DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdk21u --tag=aashipov/openjdk-build:alpinejdk21u && docker push aashipov/openjdk-build:alpinejdk21u
 RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/aashipov/openjdk-build/releases/download/1.0.0/jdk21u-linux-x86_64-jdk-21+35-alpine.tar.gz && \
+tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
+find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
+find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
+rm -rf ${JAVA_HOME}/demo/ ${JAVA_HOME}/lib/src.zip ${JAVA_HOME}/man/ && \
+java -version && \
+rm -rf /tmp/openjdk.tar.gz
+
+FROM aashipov/openjdk-build:alpinejdkbuilder AS jdk25u
+# DOCKER_BUILDKIT=1 docker build . --file=Dockerfile.alpine --target=jdk25u --tag=aashipov/openjdk-build:alpinejdk25u && docker push aashipov/openjdk-build:alpinejdk25u
+RUN curl -L -o /tmp/openjdk.tar.gz https://github.com/adoptium/temurin24-binaries/releases/download/jdk-24.0.2%2B12/OpenJDK24U-jdk_x64_alpine-linux_hotspot_24.0.2_12.tar.gz && \
 tar -xzf /tmp/openjdk.tar.gz -C ${JAVA_HOME}/ --strip-components=1 && \
 find "${JAVA_HOME}" -type f -name '*.debuginfo' -exec rm {} \; && \
 find "${JAVA_HOME}" -type f -name '*.diz' -exec rm {} \; && \
