@@ -103,7 +103,6 @@ build() {
     then
         CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-freetype-src=${FREETYPE_SRC_DIR}"
     else
-        CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --disable-freetype-bundling"
         #CONFIGURE_DETAILS="${CONFIGURE_DETAILS} --with-toolchain-type=clang"
         if [ -f /etc/alpine-release ]
         then
