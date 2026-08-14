@@ -1,8 +1,0 @@
-openJDK from source on Windows
-
-Windows Server 2012 180 days trial
-cygwin with bash git autoconf make cmake zip unzip cpio mc curl
-Visual Studio 2017
-bootstrap jdk 8, 11 and 17 as ```${HOME}/dev/tools/openjdk8```, ```{$HOME}/dev/tools/openjdk11``` and ```${HOME}/dev/tools/openjdk17```
-
-https://github.com/eclipse-openj9/openj9/blob/master/doc/build-instructions/Build_Instructions_V17.md#windows
