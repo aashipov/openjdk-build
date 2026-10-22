@@ -4,7 +4,7 @@
 
 Windows Server 2012+
 cygwin with bash git autoconf make cmake zip unzip cpio mc curl
-Visual Studio 2022
+Visual Studio 2017 for jdk8u, Visual Studio 2022 for newer
 Bootstrap JDK as `${HOME}/dev/tools/openjdkXXX`
 
 ## Installation & Setup
